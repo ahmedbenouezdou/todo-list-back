@@ -21,3 +21,4 @@ mvn test
 
 
 
+<img width="1597" alt="Capture d’écran 2025-03-18 à 22 49 44" src="https://github.com/user-attachments/assets/0d4f5806-df3a-4ab8-90a0-1d9ee087e762" />
