@@ -2,39 +2,41 @@ package com.kata.todo.mapper.impl;
 
 
 import com.kata.todo.dto.TaskDTO;
+import com.kata.todo.dto.TaskDetailDTO;
 import com.kata.todo.entity.TaskEntity;
-import com.kata.todo.mapper.TaskMapper;
+import com.kata.todo.mapper.TaskDetailMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class TaskMapperImpl implements TaskMapper {
+public class TaskDetailMapperImpl implements TaskDetailMapper {
 
     @Override
-    public TaskDTO taskToTaskDTO(TaskEntity task) {
+    public TaskDetailDTO taskToTaskDTO(TaskEntity task) {
         if (task == null) {
             return null;
         }
-        TaskDTO dto = new TaskDTO();
+        TaskDetailDTO dto = new TaskDetailDTO();
         dto.setId(task.getId());
         dto.setLabel(task.getLabel());
         dto.setComplete(task.isComplete());
         dto.setCreatedAt(task.getCreatedAt());
+        dto.setModifAt(task.getMofidAt());
         return dto;
     }
 
     @Override
-    public TaskEntity taskDTOToTask(TaskDTO taskDTO) {
+    public TaskEntity taskDTOToTask(TaskDetailDTO taskDTO) {
         if (taskDTO == null) {
             return null;
         }
-        return new TaskEntity(taskDTO.getId(), taskDTO.getLabel(), taskDTO.isComplete(), taskDTO.getCreatedAt(),null);
+        return new TaskEntity(taskDTO.getId(), taskDTO.getLabel(), taskDTO.isComplete(), taskDTO.getCreatedAt(), taskDTO.getModifAt());
     }
 
     @Override
-    public List<TaskDTO> taskListToTaskDTOList(List<TaskEntity> tasks) {
+    public List<TaskDetailDTO> taskListToTaskDTOList(List<TaskEntity> tasks) {
         if (tasks == null) {
             return null;
         }

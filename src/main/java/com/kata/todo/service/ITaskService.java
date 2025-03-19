@@ -3,6 +3,7 @@ package com.kata.todo.service;
 
 
 import com.kata.todo.dto.TaskDTO;
+import com.kata.todo.dto.TaskDetailDTO;
 import com.kata.todo.dto.TaskFilterDto;
 import com.kata.todo.dto.TasksReponsePagination;
 
@@ -16,7 +17,7 @@ public interface ITaskService {
 
     TasksReponsePagination getPendingTasks(int pageNo, int pageSize, String sortBy, String sortDir, TaskFilterDto filtre) ;
 
-    TaskDTO getTaskById(Long id);
+    TaskDetailDTO getTaskById(Long id);
 
     TaskDTO addTask(String label) ;
 

@@ -2,6 +2,7 @@ package com.kata.todo.controller;
 
 
 import com.kata.todo.dto.TaskDTO;
+import com.kata.todo.dto.TaskDetailDTO;
 import com.kata.todo.dto.TaskFilterDto;
 import com.kata.todo.dto.TasksReponsePagination;
 import com.kata.todo.service.ITaskService;
@@ -61,7 +62,7 @@ public class TaskController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Récupérer une tâche par ID")
-    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
+    public ResponseEntity<TaskDetailDTO> getTaskById(@PathVariable Long id) {
         logger.info("Requête API: GET /tasks/{}", id);
         return ResponseEntity.ok(taskService.getTaskById(id));
     }

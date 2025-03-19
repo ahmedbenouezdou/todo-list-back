@@ -1,6 +1,7 @@
 package com.kata.todo.controller;
 
 import com.kata.todo.dto.TaskDTO;
+import com.kata.todo.dto.TaskDetailDTO;
 import com.kata.todo.service.ITaskService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,10 +38,10 @@ class TaskControllerTest {
 
     @Test
     void getTaskById_ShouldReturnTask() {
-        TaskDTO taskDTO = new TaskDTO(1L, "Task 1", false, null);
+        TaskDetailDTO taskDTO = new TaskDetailDTO(1L, "Task 1", false, null,null);
         when(taskService.getTaskById(1L)).thenReturn(taskDTO);
 
-        ResponseEntity<TaskDTO> response = taskController.getTaskById(1L);
+        ResponseEntity<TaskDetailDTO> response = taskController.getTaskById(1L);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());

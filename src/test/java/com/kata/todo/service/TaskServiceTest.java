@@ -1,8 +1,10 @@
 package com.kata.todo.service;
 
 import com.kata.todo.dto.TaskDTO;
+import com.kata.todo.dto.TaskDetailDTO;
 import com.kata.todo.entity.TaskEntity;
 import com.kata.todo.exception.TaskNotFoundException;
+import com.kata.todo.mapper.TaskDetailMapper;
 import com.kata.todo.mapper.TaskMapper;
 import com.kata.todo.repository.TaskRepository;
 import com.kata.todo.repository.query.ITasksQuery;
@@ -27,11 +29,12 @@ class TaskServiceTest {
     @Mock
     private TaskRepository taskRepository;
 
-    @Mock
-    private ITasksQuery tasksQuery;
 
     @Mock
     private TaskMapper taskMapper;
+
+    @Mock
+    private TaskDetailMapper taskDetailMapper;
 
     @InjectMocks
     private TaskServiceImpl taskService;
@@ -39,15 +42,17 @@ class TaskServiceTest {
     private TaskEntity task1;
     private TaskEntity task2;
     private TaskDTO taskDTO1;
+    private TaskDetailDTO taskDetailDTO1;
     private TaskDTO taskDTO2;
     private List<TaskEntity> taskList;
     private List<TaskDTO> taskDTOList;
 
     @BeforeEach
     void setUp() {
-        task1 = new TaskEntity(1L, "Task 1", false, null);
-        task2 = new TaskEntity(2L, "Task 2", true, null);
+        task1 = new TaskEntity(1L, "Task 1", false, null,null);
+        task2 = new TaskEntity(2L, "Task 2", true, null,null);
         taskDTO1 = new TaskDTO(1L, "Task 1", false, null);
+        taskDetailDTO1 = new TaskDetailDTO(1L, "Task 1", false, null,null);
         taskDTO2 = new TaskDTO(2L, "Task 2", true, null);
 
         taskList = Arrays.asList(task1, task2);
@@ -69,9 +74,9 @@ class TaskServiceTest {
     @Test
     void getTaskById_ShouldReturnTask() {
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task1));
-        when(taskMapper.taskToTaskDTO(task1)).thenReturn(taskDTO1);
+        when(taskDetailMapper.taskToTaskDTO(task1)).thenReturn(taskDetailDTO1);
 
-        TaskDTO result = taskService.getTaskById(1L);
+        TaskDetailDTO result = taskService.getTaskById(1L);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -100,15 +105,22 @@ class TaskServiceTest {
 
     @Test
     void updateTaskStatus_ShouldUpdateStatus() {
-        when(taskRepository.findById(1L)).thenReturn(Optional.of(task1));
-        when(taskRepository.save(any(TaskEntity.class))).thenReturn(task1);
-        when(taskMapper.taskToTaskDTO(task1)).thenReturn(taskDTO1);
+        TaskEntity existingTask = new TaskEntity(1L, "Task 1", false, null,null);
+        TaskDTO updatedTaskDTO = new TaskDTO(1L, "Task 1", true, null);
 
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(existingTask));
+        when(taskRepository.save(any(TaskEntity.class))).thenReturn(existingTask);
+        when(taskMapper.taskToTaskDTO(any(TaskEntity.class))).thenReturn(updatedTaskDTO);
+
+        // Act : Mise à jour du statut de la tâche
         TaskDTO result = taskService.updateTaskStatus(1L, true);
 
+        // Assert : Vérification des résultats
         assertNotNull(result);
         assertTrue(result.isComplete());
-        verify(taskRepository, times(1)).save(any(TaskEntity.class));
+        assertEquals(1L, result.getId());
+        verify(taskRepository, times(1)).findById(1L);
+        verify(taskRepository, times(1)).save(existingTask);
     }
 
     @Test
