@@ -14,17 +14,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/tasks")
+@Validated
 @Tag(name = "Tasks", description = "Gestion des tâches de la To-Do List")
 public class TaskController {
 
@@ -98,7 +101,8 @@ public class TaskController {
             content = @Content(schema = @Schema(implementation = TaskDTO.class)))
     public ResponseEntity<TaskDTO> addTask(
             @Parameter(description = "Libellé de la tâche", required = true, example = "Acheter du pain")
-            @RequestParam String label) {
+            @RequestParam @NotBlank(message = "Le libellé ne peut pas être vide")
+            @Size(max = 500, message = "Le libellé ne peut pas dépasser 500 caractères") String label) {
         logger.info("Requête API: POST /tasks avec label={}", label);
         return ResponseEntity.ok(taskService.addTask(label));
     }

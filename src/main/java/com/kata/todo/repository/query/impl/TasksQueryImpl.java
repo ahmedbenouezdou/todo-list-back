@@ -18,10 +18,14 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Component
 public class TasksQueryImpl implements ITasksQuery {
+
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("id", "label", "createdAt", "complete");
+
     private final EntityManager em;
 
     @Autowired
@@ -40,6 +44,9 @@ public class TasksQueryImpl implements ITasksQuery {
         Root<TaskEntity> root = cq.from(TaskEntity.class);
 
         Predicate[] predicatesArray = getPredicates(filter, cb, root, cq);
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new IllegalArgumentException("Champ de tri non autorisé : " + sortBy);
+        }
         cq.distinct(true);
         cq.where(predicatesArray);
         cq.orderBy(cb.desc(root.get(sortBy)));
@@ -76,6 +83,7 @@ public class TasksQueryImpl implements ITasksQuery {
 
     private <T> Predicate[] getPredicates(TaskFilterDto filter, CriteriaBuilder cb, Root<TaskEntity> root, CriteriaQuery<T> cq) {
         List<Predicate> predicates = new ArrayList<>();
+        if (filter == null) return predicates.toArray(new Predicate[0]);
 
         if (filter.getLabel() != null && !Objects.equals(filter.getLabel(), "")) {
             predicates.add(cb.like(root.get("label"), "%" + filter.getLabel() + "%"));
