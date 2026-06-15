@@ -124,6 +124,18 @@ class TaskServiceTest {
     }
 
     @Test
+    void updateTaskStatus_ShouldThrowException_WhenTaskNotFound() {
+        // Arrange : Simuler une tâche inexistante
+        when(taskRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // Act & Assert : Vérification de l'exception
+        assertThrows(TaskNotFoundException.class, () -> taskService.updateTaskStatus(99L, true));
+
+        verify(taskRepository, times(1)).findById(99L);
+        verify(taskRepository, never()).save(any(TaskEntity.class));
+    }
+
+    @Test
     void deleteTask_ShouldDeleteTask() {
         when(taskRepository.existsById(1L)).thenReturn(true);
 

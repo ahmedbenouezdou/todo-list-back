@@ -73,6 +73,11 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public TaskDetailDTO getTaskById(Long id) {
         logger.info("Recherche de la tâche avec ID: {}", id);
+
+       /* return taskRepository.findById(id)
+                .map(taskDetailMapper::taskToTaskDTO)
+                .orElseThrow(() -> new TaskNotFoundException("Tâche introuvable avec ID : " + id));*/
+
         TaskEntity task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException("Tâche introuvable avec ID : " + id));
         return taskDetailMapper.taskToTaskDTO(task);
